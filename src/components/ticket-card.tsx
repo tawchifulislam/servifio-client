@@ -43,7 +43,6 @@ export function TicketCard({
         className,
       )}
     >
-      {/* perforated edges - tighter, cleaner dots */}
       <div
         className="absolute -top-1.5 left-0 right-0 h-3"
         style={{
@@ -71,23 +70,27 @@ export function TicketCard({
         </span>
       </div>
 
-      <h3 className="mt-4 pr-16 font-display text-xl font-semibold leading-tight">
+      <h3 className="mt-4 font-display text-xl font-semibold leading-tight">
         {title}
       </h3>
 
-      <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
-        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-accent-foreground">
-          {providerInitials}
+      <div className="mt-3 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-accent-foreground">
+            {providerInitials}
+          </div>
+          <span>{providerName}</span>
         </div>
-        <span>{providerName}</span>
-      </div>
 
-      {stamped && (
-        <div className="absolute right-6 top-14 flex rotate-[-10deg] items-center gap-1 rounded-full border-[1.5px] border-dashed border-destructive/70 px-2.5 py-1 text-destructive">
-          <BadgeCheck size={13} strokeWidth={2} />
-          <span className="text-[10px] font-bold tracking-wide">CONFIRMED</span>
-        </div>
-      )}
+        {stamped && (
+          <div className="flex shrink-0 rotate-[-8deg] items-center gap-1 rounded-full border-[1.5px] border-dashed border-destructive/70 px-2 py-1 text-destructive">
+            <BadgeCheck size={12} strokeWidth={2} />
+            <span className="text-[9.5px] font-bold tracking-wide">
+              CONFIRMED
+            </span>
+          </div>
+        )}
+      </div>
 
       <div className="my-4 border-t border-dashed border-foreground/15" />
 
