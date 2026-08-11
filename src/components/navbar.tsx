@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Menu } from 'lucide-react';
+import { Menu, LogOut, LayoutDashboard } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
 import {
   Sheet,
@@ -11,16 +12,38 @@ import {
   SheetTrigger,
   SheetTitle,
 } from '@/components/ui/sheet';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
+import { useAuth } from '@/lib/use-auth';
 import { cn } from '@/lib/utils';
 
 const navLinks = [
-  { href: '#browse', label: 'Browse services' },
-  { href: '#how', label: 'How it works' },
-  { href: '#provider', label: 'Become a provider' },
+  { href: '/services', label: 'Browse services' },
+  { href: '/#how', label: 'How it works' },
+  { href: '/#provider', label: 'Become a provider' },
 ];
+
+const roleHome: Record<string, string> = {
+  CUSTOMER: '/bookings',
+  PROVIDER: '/bookings',
+  ADMIN: '/admin',
+};
+
+const roleLabel: Record<string, string> = {
+  CUSTOMER: 'My bookings',
+  PROVIDER: 'Incoming bookings',
+  ADMIN: 'Admin panel',
+};
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const { user, ready, logout } = useAuth();
+  const router = useRouter();
 
   return (
     <motion.nav
@@ -51,24 +74,63 @@ export function Navbar() {
         </div>
 
         <div className="hidden items-center gap-4 sm:flex">
-          <Link
-            href="/login"
-            className="text-sm font-medium text-foreground/85"
-          >
-            Log in
-          </Link>
-          <Link
-            href="/register"
-            className={cn(
-              buttonVariants({ size: 'sm' }),
-              'bg-secondary text-secondary-foreground hover:bg-secondary/90',
-            )}
-          >
-            Book a service
-          </Link>
+          {ready && user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-[13px] font-bold text-accent-foreground">
+                {user.name
+                  .split(' ')
+                  .map(n => n[0])
+                  .join('')
+                  .slice(0, 2)
+                  .toUpperCase()}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="dark w-56 border-border bg-card text-card-foreground"
+              >
+                <div className="px-2 py-1.5">
+                  <p className="text-sm font-semibold">{user.name}</p>
+                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="gap-2"
+                  onClick={() => router.push(roleHome[user.role] ?? '/')}
+                >
+                  <LayoutDashboard size={14} />
+                  {roleLabel[user.role]}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="gap-2 text-destructive"
+                  onClick={logout}
+                >
+                  <LogOut size={14} />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="text-sm font-medium text-foreground/85"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/register"
+                className={cn(
+                  buttonVariants({ size: 'sm' }),
+                  'bg-secondary text-secondary-foreground hover:bg-secondary/90',
+                )}
+              >
+                Book a service
+              </Link>
+            </>
+          )}
         </div>
 
-        {/* Mobile menu trigger - visible below lg */}
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger
             className="flex h-9 w-9 items-center justify-center rounded-md border border-border text-foreground sm:hidden"
@@ -89,29 +151,54 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="rounded-md px-2 py-3 text-[15px] font-medium text-foreground/80 transition-colors hover:bg-foreground/5 hover:text-foreground"
+                  className="rounded-md px-2 py-3 text-[15px] font-medium text-foreground/80 hover:bg-foreground/5 hover:text-foreground"
                 >
                   {link.label}
                 </Link>
               ))}
               <div className="my-3 border-t border-border" />
-              <Link
-                href="/login"
-                onClick={() => setOpen(false)}
-                className="rounded-md px-2 py-3 text-[15px] font-medium text-foreground/80"
-              >
-                Log in
-              </Link>
-              <Link
-                href="/register"
-                onClick={() => setOpen(false)}
-                className={cn(
-                  buttonVariants({ size: 'default' }),
-                  'mt-2 bg-secondary text-secondary-foreground hover:bg-secondary/90',
-                )}
-              >
-                Book a service
-              </Link>
+              {ready && user ? (
+                <>
+                  <button
+                    onClick={() => {
+                      router.push(roleHome[user.role] ?? '/');
+                      setOpen(false);
+                    }}
+                    className="rounded-md px-2 py-3 text-left text-[15px] font-medium text-foreground/80"
+                  >
+                    {roleLabel[user.role]}
+                  </button>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setOpen(false);
+                    }}
+                    className="rounded-md px-2 py-3 text-left text-[15px] font-medium text-destructive"
+                  >
+                    Log out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    onClick={() => setOpen(false)}
+                    className="rounded-md px-2 py-3 text-[15px] font-medium text-foreground/80"
+                  >
+                    Log in
+                  </Link>
+                  <Link
+                    href="/register"
+                    onClick={() => setOpen(false)}
+                    className={cn(
+                      buttonVariants({ size: 'default' }),
+                      'mt-2 bg-secondary text-secondary-foreground hover:bg-secondary/90',
+                    )}
+                  >
+                    Book a service
+                  </Link>
+                </>
+              )}
             </div>
           </SheetContent>
         </Sheet>
