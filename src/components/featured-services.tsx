@@ -58,7 +58,7 @@ export function FeaturedServices() {
           </h2>
         </div>
         <p className="max-w-70 text-[14.5px] text-foreground/55 sm:text-[15px] sm:text-right">
-          A sample of active listings — browse the full board once you&apos;re
+          A sample of active listings - browse the full board once you&apos;re
           logged in.
         </p>
       </div>

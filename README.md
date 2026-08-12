@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Servifio - Frontend
 
-## Getting Started
+Client for **Servifio**, a local service marketplace. Signature UI motif: a perforated job-ticket stub, reused across service listings and bookings.
 
-First, run the development server:
+**App:** [servifio.vercel.app](https://servifio.vercel.app) · **API:** [servifio-server.onrender.com](https://servifio-server.onrender.com) · **API docs:** [servifio-server/API_DOCUMENTATION.md](https://github.com/tawchifulislam/servifio-server/blob/main/API_DOCUMENTATION.md)
+
+## Stack
+
+Next.js 16 (App Router) · TypeScript · Tailwind CSS v4 · shadcn/ui · Framer Motion · react-hook-form + Zod
+
+## Features
+
+- Role-aware UI and protected routes (`CUSTOMER`, `PROVIDER`, `ADMIN`)
+- Service discovery with category/search filters
+- Booking flow with live status tracking
+- Reviews on completed bookings
+- Provider service management, admin category/user management
+- Responsive across mobile, tablet, desktop
+
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repo-url>
+cd servifio-client
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`.env.local`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```dotenv
+NEXT_PUBLIC_API_URL=http://localhost:5000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev        # http://localhost:3000
+```
 
-## Learn More
+## Structure
 
-To learn more about Next.js, take a look at the following resources:
+```text
+src/
+├── app/           routes (login, services, bookings, provider, admin)
+├── components/    ui/ (shadcn), auth/, ticket-card, navbar, etc.
+└── lib/           api client, auth store, zod schemas
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Backend repo: [servifio-server](https://github.com/tawchifulislam/servifio-server)

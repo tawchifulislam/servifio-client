@@ -34,7 +34,7 @@ export function RegisterForm() {
     try {
       const data = await api.post<AuthData>('/api/auth/register', values);
       authStore.save(data);
-      toast.success('Account created — welcome to Servifio');
+      toast.success('Account created - welcome to Servifio');
       router.push('/');
     } catch (error) {
       const message =

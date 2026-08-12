@@ -70,7 +70,7 @@ export function BookingDialog({
         },
         token,
       );
-      toast.success('Booking requested — track it from My Bookings');
+      toast.success('Booking requested - track it from My Bookings');
       setOpen(false);
       form.reset();
     } catch (error) {

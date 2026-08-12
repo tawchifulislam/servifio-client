@@ -59,7 +59,7 @@ export function ReviewDialog({
         },
         token,
       );
-      toast.success('Review submitted — thanks for the feedback');
+      toast.success('Review submitted - thanks for the feedback');
       setOpen(false);
       form.reset();
       onSubmitted?.();
