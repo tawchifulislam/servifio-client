@@ -10,9 +10,9 @@ import { ProtectedRoute } from '@/components/protected-route';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { BookingStatusBadge } from '@/components/booking-status-badge';
+import { ReviewDialog } from '@/components/review-dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { ReviewDialog } from '@/components/review-dialog';
 
 const nextActions: Record<
   BookingStatus,
@@ -51,11 +51,11 @@ function BookingsContent() {
   }, []);
 
   useEffect(() => {
-    const fetchBookings = async () => {
+    const initialize = async () => {
       await load();
     };
 
-    void fetchBookings();
+    void initialize();
   }, [load]);
 
   const updateStatus = async (id: string, status: BookingStatus) => {

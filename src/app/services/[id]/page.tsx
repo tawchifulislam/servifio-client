@@ -7,8 +7,8 @@ import type { Service } from '@/lib/types';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { BookingDialog } from '@/components/booking-dialog';
-import { Skeleton } from '@/components/ui/skeleton';
 import { ServiceReviews } from '@/components/service-reviews';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ServiceDetailsPage() {
   const params = useParams<{ id: string }>();
@@ -37,46 +37,49 @@ export default function ServiceDetailsPage() {
         )}
 
         {!loading && service && (
-          <div className="rounded-lg border border-border bg-foreground/3 p-7 sm:p-10">
-            <span
-              className="inline-block rounded-sm px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wide text-background"
-              style={{ background: 'var(--secondary)' }}
-            >
-              {service.category?.name ?? 'Service'}
-            </span>
-            <h1 className="mt-4 font-display text-3xl font-semibold text-foreground sm:text-4xl">
-              {service.title}
-            </h1>
-            <div className="mt-3 flex items-center gap-2 text-sm text-foreground/60">
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-accent text-[12px] font-bold text-accent-foreground">
-                {(service.provider?.name ?? 'SR')
-                  .split(' ')
-                  .map(n => n[0])
-                  .join('')
-                  .slice(0, 2)
-                  .toUpperCase()}
-              </div>
-              {service.provider?.name}
-            </div>
-
-            <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-foreground/70">
-              {service.description}
-            </p>
-
-            <div className="my-7 border-t border-dashed border-foreground/15" />
-
-            <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-              <span className="font-display text-2xl font-bold text-foreground">
-                ৳{service.price}
+          <>
+            <div className="rounded-lg border border-border bg-foreground/3 p-7 sm:p-10">
+              <span
+                className="inline-block rounded-sm px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wide text-background"
+                style={{ background: 'var(--secondary)' }}
+              >
+                {service.category?.name ?? 'Service'}
               </span>
-              <BookingDialog
-                serviceId={service.id}
-                serviceTitle={service.title}
-              />
+              <h1 className="mt-4 font-display text-3xl font-semibold text-foreground sm:text-4xl">
+                {service.title}
+              </h1>
+              <div className="mt-3 flex items-center gap-2 text-sm text-foreground/60">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-accent text-[12px] font-bold text-accent-foreground">
+                  {(service.provider?.name ?? 'SR')
+                    .split(' ')
+                    .map(n => n[0])
+                    .join('')
+                    .slice(0, 2)
+                    .toUpperCase()}
+                </div>
+                {service.provider?.name}
+              </div>
+
+              <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-foreground/70">
+                {service.description}
+              </p>
+
+              <div className="my-7 border-t border-dashed border-foreground/15" />
+
+              <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+                <span className="font-display text-2xl font-bold text-foreground">
+                  ৳{service.price}
+                </span>
+                <BookingDialog
+                  serviceId={service.id}
+                  serviceTitle={service.title}
+                />
+              </div>
             </div>
-          </div>
+
+            <ServiceReviews serviceId={service.id} />
+          </>
         )}
-        {!loading && service && <ServiceReviews serviceId={service.id} />}
       </section>
       <Footer />
     </div>
