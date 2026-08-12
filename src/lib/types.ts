@@ -54,3 +54,13 @@ export interface Review {
   customer?: { id: string; name: string };
   createdAt: string;
 }
+
+export interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  role: 'CUSTOMER' | 'PROVIDER' | 'ADMIN';
+  isDeleted: boolean;
+  createdAt: string;
+}
