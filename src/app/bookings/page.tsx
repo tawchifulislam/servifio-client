@@ -12,6 +12,7 @@ import { Footer } from '@/components/footer';
 import { BookingStatusBadge } from '@/components/booking-status-badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
+import { ReviewDialog } from '@/components/review-dialog';
 
 const nextActions: Record<
   BookingStatus,
@@ -142,6 +143,16 @@ function BookingsContent() {
                           {action.label}
                         </Button>
                       ))}
+                    </div>
+                  )}
+
+                {user?.role === 'CUSTOMER' &&
+                  booking.status === 'COMPLETED' && (
+                    <div className="shrink-0">
+                      <ReviewDialog
+                        bookingId={booking.id}
+                        serviceTitle={booking.service?.title ?? 'this service'}
+                      />
                     </div>
                   )}
               </div>

@@ -8,6 +8,7 @@ import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { BookingDialog } from '@/components/booking-dialog';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ServiceReviews } from '@/components/service-reviews';
 
 export default function ServiceDetailsPage() {
   const params = useParams<{ id: string }>();
@@ -75,6 +76,7 @@ export default function ServiceDetailsPage() {
             </div>
           </div>
         )}
+        {!loading && service && <ServiceReviews serviceId={service.id} />}
       </section>
       <Footer />
     </div>
