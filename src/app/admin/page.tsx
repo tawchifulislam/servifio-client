@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Tag, Wrench, ArrowRight } from 'lucide-react';
+import { Tag, Wrench, ArrowRight, Users } from 'lucide-react';
 import { api } from '@/lib/api';
 import type { Category, Service } from '@/lib/types';
 import { ProtectedRoute } from '@/components/protected-route';
@@ -81,6 +81,22 @@ function AdminHomeContent() {
               <p className="mt-0.5 text-sm text-foreground/50">
                 Add, edit, or remove service categories.
               </p>
+            </div>
+            <ArrowRight size={16} className="text-foreground/40" />
+          </Link>
+
+          <Link
+            href="/admin/users"
+            className="flex items-center justify-between rounded-lg border border-border bg-foreground/3 p-5 transition-colors hover:border-secondary/40"
+          >
+            <div className="flex items-start gap-3">
+              <Users size={18} className="mt-0.5 text-foreground/40" />
+              <div>
+                <h3 className="font-semibold text-foreground">Manage users</h3>
+                <p className="mt-0.5 text-sm text-foreground/50">
+                  View and deactivate accounts.
+                </p>
+              </div>
             </div>
             <ArrowRight size={16} className="text-foreground/40" />
           </Link>

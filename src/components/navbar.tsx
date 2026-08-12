@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Menu, LogOut, LayoutDashboard } from 'lucide-react';
+import { Menu, LogOut, LayoutDashboard, Wrench } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
 import {
   Sheet,
@@ -100,6 +100,15 @@ export function Navbar() {
                   <LayoutDashboard size={14} />
                   {roleLabel[user.role]}
                 </DropdownMenuItem>
+                {user.role === 'PROVIDER' && (
+                  <DropdownMenuItem
+                    className="gap-2"
+                    onClick={() => router.push('/provider/services')}
+                  >
+                    <Wrench size={14} />
+                    My services
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="gap-2 text-destructive"
@@ -168,6 +177,17 @@ export function Navbar() {
                   >
                     {roleLabel[user.role]}
                   </button>
+                  {user.role === 'PROVIDER' && (
+                    <button
+                      onClick={() => {
+                        router.push('/provider/services');
+                        setOpen(false);
+                      }}
+                      className="rounded-md px-2 py-3 text-left text-[15px] font-medium text-foreground/80"
+                    >
+                      My services
+                    </button>
+                  )}
                   <button
                     onClick={() => {
                       logout();
