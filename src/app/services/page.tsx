@@ -4,14 +4,6 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Search,
-  Wrench,
-  Sparkles,
-  BookOpen,
-  Zap,
-  Wind,
-  PaintRoller,
-  Truck,
-  type LucideIcon,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import type { Service, Category } from '@/lib/types';
@@ -20,20 +12,7 @@ import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-
-const categoryIcons: Record<string, LucideIcon> = {
-  Plumbing: Wrench,
-  Tutoring: BookOpen,
-  Cleaning: Sparkles,
-  Electrical: Zap,
-  'Appliance repair': Wind,
-  Painting: PaintRoller,
-  'Moving help': Truck,
-};
-
-function getIcon(categoryName?: string): LucideIcon {
-  return categoryIcons[categoryName ?? ''] ?? Wrench;
-}
+import { getCategoryStyle } from '@/lib/category-style';
 
 export default function ServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
@@ -126,8 +105,8 @@ export default function ServicesPage() {
                 <TicketCard
                   ticketNo={service.id.slice(0, 4).toUpperCase()}
                   category={service.category?.name ?? 'Service'}
-                  categoryColor="var(--foreground)"
-                  icon={getIcon(service.category?.name)}
+                  categoryColor={getCategoryStyle(service.category?.name).color}
+                  icon={getCategoryStyle(service.category?.name).icon}
                   title={service.title}
                   providerName={service.provider?.name ?? 'Provider'}
                   area="Nearby"
