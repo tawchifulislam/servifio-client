@@ -1,18 +1,20 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
-import { TicketCard } from '@/components/ticket-card';
+import { ArrowRight, Wrench, Sparkles, BookOpen } from 'lucide-react';
+import { TicketCarousel } from '@/components/ticket-carousel';
 
 const services = [
   {
     ticketNo: '0512',
     category: 'Plumbing',
     categoryColor: 'var(--accent)',
+    icon: Wrench,
     title: 'Kitchen sink & leak repair',
     providerName: 'Karim Uddin',
-    providerInitials: 'KU',
-    meta: 'Mirpur · Same-day available',
+    area: 'Mirpur',
+    date: 'Available',
+    time: 'Today',
     price: '৳500',
     rating: 5,
   },
@@ -20,10 +22,12 @@ const services = [
     ticketNo: '0498',
     category: 'Cleaning',
     categoryColor: 'var(--destructive)',
+    icon: Sparkles,
     title: 'Full apartment deep clean',
     providerName: 'Rima Akter',
-    providerInitials: 'RA',
-    meta: 'Dhanmondi · 3-hour service',
+    area: 'Dhanmondi',
+    date: 'Available',
+    time: '3-hour visit',
     price: '৳1,200',
     rating: 4,
   },
@@ -31,10 +35,12 @@ const services = [
     ticketNo: '0447',
     category: 'Tutoring',
     categoryColor: 'var(--secondary)',
+    icon: BookOpen,
     title: 'SSC Physics & Chemistry',
     providerName: 'Mahfuz Hasan',
-    providerInitials: 'MH',
-    meta: 'Uttara · Home visits',
+    area: 'Uttara',
+    date: 'Available',
+    time: 'Home visits',
     price: '৳800/mo',
     rating: 5,
   },
@@ -58,25 +64,19 @@ export function FeaturedServices() {
           </h2>
         </div>
         <p className="max-w-70 text-[14.5px] text-foreground/55 sm:text-[15px] sm:text-right">
-          A sample of active listings - browse the full board once you&apos;re
+          Swipe through active listings — browse the full board once you&apos;re
           logged in.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-        {services.map((service, i) => (
-          <motion.div
-            key={service.ticketNo}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.5, delay: i * 0.1, ease: 'easeOut' }}
-            className="flex justify-center sm:block"
-          >
-            <TicketCard {...service} rotate={0} className="max-w-none" />
-          </motion.div>
-        ))}
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+      >
+        <TicketCarousel tickets={services} />
+      </motion.div>
 
       <motion.div
         initial={{ opacity: 0 }}

@@ -2,7 +2,17 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Search } from 'lucide-react';
+import {
+  Search,
+  Wrench,
+  Sparkles,
+  BookOpen,
+  Zap,
+  Wind,
+  PaintRoller,
+  Truck,
+  type LucideIcon,
+} from 'lucide-react';
 import { api } from '@/lib/api';
 import type { Service, Category } from '@/lib/types';
 import { TicketCard } from '@/components/ticket-card';
@@ -10,6 +20,20 @@ import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
+
+const categoryIcons: Record<string, LucideIcon> = {
+  Plumbing: Wrench,
+  Tutoring: BookOpen,
+  Cleaning: Sparkles,
+  Electrical: Zap,
+  'Appliance repair': Wind,
+  Painting: PaintRoller,
+  'Moving help': Truck,
+};
+
+function getIcon(categoryName?: string): LucideIcon {
+  return categoryIcons[categoryName ?? ''] ?? Wrench;
+}
 
 export default function ServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
@@ -86,44 +110,30 @@ export default function ServicesPage() {
           ))}
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+        <div className="mt-10 flex flex-wrap justify-center gap-8 sm:justify-start">
           {loading &&
             Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton
-                key={i}
-                className="h-70 w-full max-w-85 rounded-lg"
-              />
+              <Skeleton key={i} className="h-60 w-full max-w-105 rounded-xl" />
             ))}
 
           {!loading && filtered.length === 0 && (
-            <p className="col-span-full text-foreground/50">
-              No services match your search.
-            </p>
+            <p className="text-foreground/50">No services match your search.</p>
           )}
 
           {!loading &&
             filtered.map(service => (
-              <Link
-                key={service.id}
-                href={`/services/${service.id}`}
-                className="flex justify-center sm:block"
-              >
+              <Link key={service.id} href={`/services/${service.id}`}>
                 <TicketCard
                   ticketNo={service.id.slice(0, 4).toUpperCase()}
                   category={service.category?.name ?? 'Service'}
                   categoryColor="var(--foreground)"
+                  icon={getIcon(service.category?.name)}
                   title={service.title}
                   providerName={service.provider?.name ?? 'Provider'}
-                  providerInitials={(service.provider?.name ?? 'SR')
-                    .split(' ')
-                    .map(n => n[0])
-                    .join('')
-                    .slice(0, 2)
-                    .toUpperCase()}
-                  meta={service.description}
+                  area="Nearby"
+                  date="Available"
+                  time="On request"
                   price={`৳${service.price}`}
-                  rotate={0}
-                  className="max-w-none"
                 />
               </Link>
             ))}

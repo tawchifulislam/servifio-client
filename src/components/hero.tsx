@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, type Variants } from 'framer-motion';
-import { Search } from 'lucide-react';
+import { Search, Wrench } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { TicketCard } from '@/components/ticket-card';
@@ -27,7 +27,7 @@ export function Hero() {
           className="mb-5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[13px] font-semibold text-secondary sm:text-sm"
         >
           <span className="h-px w-5 bg-secondary" />
-          <span className="uppercase tracking-[0.08em]">
+          <span className="uppercase tracking-widest">
             Dhaka-wide network
           </span>
           <span className="font-normal text-foreground/50">
@@ -93,14 +93,14 @@ export function Hero() {
           ticketNo="0417"
           category="Plumbing"
           categoryColor="var(--foreground)"
+          icon={Wrench}
           title="Emergency pipe repair"
-          providerName="Karim Uddin · Mirpur"
-          providerInitials="KU"
-          meta="Sat, 15 Aug · 10:00 AM"
+          providerName="Karim Uddin"
+          area="Mirpur"
+          date="Sat, 15 Aug"
+          time="10:00 AM"
           price="৳500"
           rating={5}
-          stamped
-          rotate={0}
         />
       </motion.div>
     </section>
