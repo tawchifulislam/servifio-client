@@ -1,52 +1,43 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Wrench, Sparkles, BookOpen } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import { api } from '@/lib/api';
+import type { Service } from '@/lib/types';
+import { getCategoryStyle } from '@/lib/category-style';
 import { TicketCarousel } from '@/components/ticket-carousel';
-
-const services = [
-  {
-    ticketNo: '0512',
-    category: 'Plumbing',
-    categoryColor: 'var(--accent)',
-    icon: Wrench,
-    title: 'Kitchen sink & leak repair',
-    providerName: 'Karim Uddin',
-    area: 'Mirpur',
-    date: 'Available',
-    time: 'Today',
-    price: '৳500',
-    rating: 5,
-  },
-  {
-    ticketNo: '0498',
-    category: 'Cleaning',
-    categoryColor: 'var(--destructive)',
-    icon: Sparkles,
-    title: 'Full apartment deep clean',
-    providerName: 'Rima Akter',
-    area: 'Dhanmondi',
-    date: 'Available',
-    time: '3-hour visit',
-    price: '৳1,200',
-    rating: 4,
-  },
-  {
-    ticketNo: '0447',
-    category: 'Tutoring',
-    categoryColor: 'var(--secondary)',
-    icon: BookOpen,
-    title: 'SSC Physics & Chemistry',
-    providerName: 'Mahfuz Hasan',
-    area: 'Uttara',
-    date: 'Available',
-    time: 'Home visits',
-    price: '৳800/mo',
-    rating: 5,
-  },
-];
+import { Skeleton } from '@/components/ui/skeleton';
+import Link from 'next/link';
 
 export function FeaturedServices() {
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await api.get<Service[]>('/api/services');
+        setServices(data.slice(0, 6));
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  const tickets = services.map(service => ({
+    ticketNo: service.id.slice(0, 4).toUpperCase(),
+    category: service.category?.name ?? 'Service',
+    categoryColor: getCategoryStyle(service.category?.name).color,
+    icon: getCategoryStyle(service.category?.name).icon,
+    title: service.title,
+    providerName: service.provider?.name ?? 'Provider',
+    area: 'Nearby',
+    date: 'Available',
+    time: 'On request',
+    price: `৳${service.price}`,
+  }));
+
   return (
     <section
       id="browse"
@@ -69,14 +60,33 @@ export function FeaturedServices() {
         </p>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-60px' }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-      >
-        <TicketCarousel tickets={services} />
-      </motion.div>
+      {loading && (
+        <div className="flex gap-5 overflow-hidden">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton
+              key={i}
+              className="h-60 w-full max-w-105 shrink-0 rounded-xl"
+            />
+          ))}
+        </div>
+      )}
+
+      {!loading && services.length === 0 && (
+        <p className="text-foreground/50">
+          No open tickets right now — check back soon.
+        </p>
+      )}
+
+      {!loading && services.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+        >
+          <TicketCarousel tickets={tickets} />
+        </motion.div>
+      )}
 
       <motion.div
         initial={{ opacity: 0 }}
@@ -85,13 +95,15 @@ export function FeaturedServices() {
         transition={{ duration: 0.4, delay: 0.3 }}
         className="mt-10 flex justify-center sm:mt-12"
       >
-        <button className="group flex items-center gap-2 text-sm font-semibold text-foreground/80 transition-colors hover:text-foreground">
+        <Link href="/services"
+          className="group flex items-center gap-2 text-sm font-semibold text-foreground/80 transition-colors hover:text-foreground"
+        >
           View all open tickets
           <ArrowRight
             size={15}
             className="transition-transform group-hover:translate-x-1"
           />
-        </button>
+        </Link>
       </motion.div>
     </section>
   );
