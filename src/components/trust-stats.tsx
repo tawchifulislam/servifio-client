@@ -15,14 +15,16 @@ export function TrustStats() {
       {/* decorative dotted map path - abstract, not a literal map */}
       <svg
         className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.07]"
+        viewBox="0 0 1200 220"
         preserveAspectRatio="none"
       >
         <motion.path
-          d="M -50 120 Q 200 40, 400 140 T 900 90 T 1400 160"
+          d="M -50 130 Q 250 50, 500 140 T 1000 100 T 1300 160"
           fill="none"
           stroke="var(--secondary)"
           strokeWidth="1.5"
           strokeDasharray="2 8"
+          vectorEffect="non-scaling-stroke"
           initial={{ pathLength: 0 }}
           whileInView={{ pathLength: 1 }}
           viewport={{ once: true }}
@@ -35,6 +37,7 @@ export function TrustStats() {
             cy={90 + (i % 2) * 50}
             r="4"
             fill="var(--secondary)"
+            vectorEffect="non-scaling-stroke"
           />
         ))}
       </svg>
