@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { motion } from "framer-motion";
-import { type LucideIcon, Star } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { motion } from 'framer-motion';
+import { type LucideIcon, Star } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface TicketCardProps {
   ticketNo: string;
@@ -36,10 +36,10 @@ export function TicketCard({
   return (
     <motion.div
       whileHover={{ y: -4 }}
-      transition={{ type: "spring", stiffness: 260, damping: 20 }}
+      transition={{ type: 'spring', stiffness: 260, damping: 20 }}
       className={cn(
-        "relative flex w-full max-w-105 overflow-hidden rounded-xl border border-black/5 bg-card text-card-foreground shadow-[0_24px_48px_-16px_rgba(0,0,0,0.4)]",
-        className
+        'relative flex w-full max-w-105 overflow-hidden rounded-xl border border-black/5 bg-card text-card-foreground shadow-[0_24px_48px_-16px_rgba(0,0,0,0.4)]',
+        className,
       )}
     >
       {/* main panel */}
@@ -47,7 +47,7 @@ export function TicketCard({
         <div className="flex items-center justify-between">
           <span
             className="rounded-sm px-2 py-1 text-[10px] font-bold uppercase tracking-wide"
-            style={{ background: categoryColor, color: "var(--card)" }}
+            style={{ background: categoryColor, color: 'var(--card)' }}
           >
             {category}
           </span>
@@ -60,13 +60,15 @@ export function TicketCard({
           {title}
         </h3>
 
-        {/* route visualization — the "someone's coming" metaphor */}
+        {/* route visualization - the "someone's coming" metaphor */}
         <div className="relative mt-5 flex items-center justify-between">
           <div className="flex flex-col items-start">
             <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
               Provider
             </span>
-            <span className="font-display text-sm font-bold">{providerName}</span>
+            <span className="font-display text-sm font-bold">
+              {providerName}
+            </span>
           </div>
           <div className="relative mx-2 h-px flex-1 border-t border-dashed border-foreground/25">
             <div className="absolute left-1/2 top-1/2 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-card">
@@ -126,7 +128,7 @@ export function TicketCard({
           className="h-14 w-full"
           style={{
             backgroundImage:
-              "repeating-linear-gradient(90deg, var(--foreground) 0px, var(--foreground) 1.5px, transparent 1.5px, transparent 3px)",
+              'repeating-linear-gradient(90deg, var(--foreground) 0px, var(--foreground) 1.5px, transparent 1.5px, transparent 3px)',
             opacity: 0.55,
           }}
         />

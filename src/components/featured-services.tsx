@@ -55,7 +55,7 @@ export function FeaturedServices() {
           </h2>
         </div>
         <p className="max-w-70 text-[14.5px] text-foreground/55 sm:text-[15px] sm:text-right">
-          Swipe through active listings — browse the full board once you&apos;re
+          Swipe through active listings - browse the full board once you&apos;re
           logged in.
         </p>
       </div>
@@ -73,7 +73,7 @@ export function FeaturedServices() {
 
       {!loading && services.length === 0 && (
         <p className="text-foreground/50">
-          No open tickets right now — check back soon.
+          No open tickets right now - check back soon.
         </p>
       )}
 
@@ -95,7 +95,8 @@ export function FeaturedServices() {
         transition={{ duration: 0.4, delay: 0.3 }}
         className="mt-10 flex justify-center sm:mt-12"
       >
-        <Link href="/services"
+        <Link
+          href="/services"
           className="group flex items-center gap-2 text-sm font-semibold text-foreground/80 transition-colors hover:text-foreground"
         >
           View all open tickets
