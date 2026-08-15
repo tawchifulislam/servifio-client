@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Search,
+  SearchIcon,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import type { Service, Category } from '@/lib/types';
@@ -11,8 +12,9 @@ import { TicketCard } from '@/components/ticket-card';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
 import { getCategoryStyle } from '@/lib/category-style';
+import { EmptyState } from '@/components/empty-state';
+import { TicketSkeleton } from '@/components/ticket-skeleton';
 
 export default function ServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
@@ -91,12 +93,16 @@ export default function ServicesPage() {
 
         <div className="mt-10 flex flex-wrap justify-center gap-8 sm:justify-start">
           {loading &&
-            Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="h-60 w-full max-w-105 rounded-xl" />
-            ))}
+            Array.from({ length: 6 }).map((_, i) => <TicketSkeleton key={i} />)}
 
           {!loading && filtered.length === 0 && (
-            <p className="text-foreground/50">No services match your search.</p>
+            <div className="w-full">
+              <EmptyState
+                icon={SearchIcon}
+                title="No tickets match that search"
+                description="Try a different keyword or clear the category filter."
+              />
+            </div>
           )}
 
           {!loading &&

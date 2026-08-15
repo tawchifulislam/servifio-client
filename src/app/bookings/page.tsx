@@ -13,6 +13,8 @@ import { BookingStatusBadge } from '@/components/booking-status-badge';
 import { ReviewDialog } from '@/components/review-dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
+import { Calendar } from 'lucide-react';
+import { EmptyState } from '@/components/empty-state';
 
 const nextActions: Record<
   BookingStatus,
@@ -94,7 +96,19 @@ function BookingsContent() {
             ))}
 
           {!loading && bookings.length === 0 && (
-            <p className="text-foreground/50">No bookings yet.</p>
+            <EmptyState
+              icon={Calendar}
+              title={
+                user?.role === 'PROVIDER'
+                  ? 'No bookings yet'
+                  : "You haven't booked anything yet"
+              }
+              description={
+                user?.role === 'PROVIDER'
+                  ? 'New requests for your services will show up here.'
+                  : 'Browse services and open your first ticket.'
+              }
+            />
           )}
 
           {!loading &&
