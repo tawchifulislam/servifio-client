@@ -2,10 +2,11 @@
 
 import { motion } from 'framer-motion';
 import { Quote, Star } from 'lucide-react';
+import { getInitials } from '@/lib/get-initials';
 
 const featured = {
   quote:
-    'The provider showed up exactly when the ticket said. No back-and-forth calls, no guessing - just a name and a time I could count on.',
+    'The provider showed up exactly when the ticket said. No back-and-forth calls, no guessing — just a name and a time I could count on.',
   name: 'Nusrat Jahan',
   role: 'Customer, Bashundhara',
 };
@@ -18,7 +19,7 @@ const quotes = [
     rating: 5,
   },
   {
-    quote: 'Left a review after the visit - felt like it actually mattered.',
+    quote: 'Left a review after the visit — felt like it actually mattered.',
     name: 'Sadia Rahman',
     role: 'Banani',
     rating: 5,
@@ -47,10 +48,7 @@ export function Testimonials() {
           </p>
           <div className="mt-6 flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent text-[13px] font-bold text-accent-foreground">
-              {featured.name
-                .split(' ')
-                .map(n => n[0])
-                .join('')}
+              {getInitials(featured.name)}
             </div>
             <div>
               <div className="text-sm font-semibold text-foreground">

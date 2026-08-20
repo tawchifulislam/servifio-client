@@ -3,12 +3,15 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { api } from '@/lib/api';
+import { getErrorMessage } from '@/lib/get-error-message';
+import { getInitials } from '@/lib/get-initials';
 import type { Service } from '@/lib/types';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { BookingDialog } from '@/components/booking-dialog';
 import { ServiceReviews } from '@/components/service-reviews';
 import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
 
 export default function ServiceDetailsPage() {
   const params = useParams<{ id: string }>();
@@ -20,6 +23,8 @@ export default function ServiceDetailsPage() {
       try {
         const data = await api.get<Service>(`/api/services/${params.id}`);
         setService(data);
+      } catch (error) {
+        toast.error(getErrorMessage(error, 'Could not load this service'));
       } finally {
         setLoading(false);
       }
@@ -50,12 +55,7 @@ export default function ServiceDetailsPage() {
               </h1>
               <div className="mt-3 flex items-center gap-2 text-sm text-foreground/60">
                 <div className="flex h-7 w-7 items-center justify-center rounded-full bg-accent text-[12px] font-bold text-accent-foreground">
-                  {(service.provider?.name ?? 'SR')
-                    .split(' ')
-                    .map(n => n[0])
-                    .join('')
-                    .slice(0, 2)
-                    .toUpperCase()}
+                  {getInitials(service.provider?.name ?? 'Service Provider')}
                 </div>
                 {service.provider?.name}
               </div>
