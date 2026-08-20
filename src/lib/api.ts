@@ -1,3 +1,5 @@
+import { authStore } from '@/lib/auth-store';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 interface ApiResponse<T> {
@@ -16,8 +18,8 @@ export class ApiClientError extends Error {
 async function request<T>(
   endpoint: string,
   options: RequestInit = {},
-  token?: string,
 ): Promise<T> {
+  const token = authStore.getToken();
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string> | undefined),
@@ -35,15 +37,10 @@ async function request<T>(
 }
 
 export const api = {
-  get: <T>(endpoint: string, token?: string) => request<T>(endpoint, {}, token),
-  post: <T>(endpoint: string, body: unknown, token?: string) =>
-    request<T>(endpoint, { method: 'POST', body: JSON.stringify(body) }, token),
-  patch: <T>(endpoint: string, body: unknown, token?: string) =>
-    request<T>(
-      endpoint,
-      { method: 'PATCH', body: JSON.stringify(body) },
-      token,
-    ),
-  delete: <T>(endpoint: string, token?: string) =>
-    request<T>(endpoint, { method: 'DELETE' }, token),
+  get: <T>(endpoint: string) => request<T>(endpoint),
+  post: <T>(endpoint: string, body: unknown) =>
+    request<T>(endpoint, { method: 'POST', body: JSON.stringify(body) }),
+  patch: <T>(endpoint: string, body: unknown) =>
+    request<T>(endpoint, { method: 'PATCH', body: JSON.stringify(body) }),
+  delete: <T>(endpoint: string) => request<T>(endpoint, { method: 'DELETE' }),
 };
