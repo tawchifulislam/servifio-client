@@ -20,8 +20,8 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/lib/use-auth';
-import { cn } from '@/lib/utils';
 import { getInitials } from '@/lib/get-initials';
+import { cn } from '@/lib/utils';
 
 const navLinks = [
   { href: '/services', label: 'Browse services' },

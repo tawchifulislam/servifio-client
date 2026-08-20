@@ -4,14 +4,16 @@ import { useEffect, useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import { Loader2, Plus, Pencil, Trash2 } from 'lucide-react';
+import { Loader2, Plus, Pencil, Trash2, Wrench } from 'lucide-react';
 import { serviceSchema, type ServiceValues } from '@/lib/validations/service';
-import { api, ApiClientError } from '@/lib/api';
+import { api } from '@/lib/api';
+import { getErrorMessage } from '@/lib/get-error-message';
 import { authStore } from '@/lib/auth-store';
 import type { Service, Category } from '@/lib/types';
 import { ProtectedRoute } from '@/components/protected-route';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
+import { EmptyState } from '@/components/empty-state';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -61,21 +63,16 @@ function ServiceForm({
   const onSubmit = async (values: ServiceValues) => {
     setLoading(true);
     try {
-      const token = authStore.getToken() ?? undefined;
       if (initial) {
-        await api.patch(`/api/services/${initial.id}`, values, token);
+        await api.patch(`/api/services/${initial.id}`, values);
         toast.success('Service updated');
       } else {
-        await api.post('/api/services', values, token);
+        await api.post('/api/services', values);
         toast.success('Service created');
       }
       onDone();
     } catch (error) {
-      const message =
-        error instanceof ApiClientError
-          ? error.message
-          : 'Something went wrong';
-      toast.error(message);
+      toast.error(getErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -175,7 +172,6 @@ function ProviderServicesContent() {
   const [editing, setEditing] = useState<Service | null>(null);
 
   const load = useCallback(async () => {
-    const token = authStore.getToken() ?? undefined;
     try {
       const [allServices, cats] = await Promise.all([
         api.get<Service[]>('/api/services'),
@@ -184,53 +180,40 @@ function ProviderServicesContent() {
       const userId = authStore.getUser()?.id;
       setServices(allServices.filter(s => s.providerId === userId));
       setCategories(cats);
-    } catch {
-      toast.error('Could not load services');
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'Could not load services'));
     } finally {
       setLoading(false);
     }
-    void token;
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      await load();
-    };
+    const timeoutId = window.setTimeout(() => {
+      void load();
+    }, 0);
 
-    void fetchData();
+    return () => window.clearTimeout(timeoutId);
   }, [load]);
 
   const handleDelete = async (id: string) => {
-    const token = authStore.getToken() ?? undefined;
     try {
-      await api.delete(`/api/services/${id}`, token);
+      await api.delete(`/api/services/${id}`);
       toast.success('Service removed');
       load();
     } catch (error) {
-      const message =
-        error instanceof ApiClientError
-          ? error.message
-          : 'Could not remove service';
-      toast.error(message);
+      toast.error(getErrorMessage(error, 'Could not remove service'));
     }
   };
 
   const toggleActive = async (service: Service) => {
-    const token = authStore.getToken() ?? undefined;
     try {
-      await api.patch(
-        `/api/services/${service.id}`,
-        { status: service.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE' },
-        token,
-      );
+      await api.patch(`/api/services/${service.id}`, {
+        status: service.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE',
+      });
       toast.success('Status updated');
       load();
     } catch (error) {
-      const message =
-        error instanceof ApiClientError
-          ? error.message
-          : 'Could not update status';
-      toast.error(message);
+      toast.error(getErrorMessage(error, 'Could not update status'));
     }
   };
 
@@ -276,9 +259,11 @@ function ProviderServicesContent() {
             ))}
 
           {!loading && services.length === 0 && (
-            <p className="text-foreground/50">
-              You haven&apos;t listed any services yet.
-            </p>
+            <EmptyState
+              icon={Wrench}
+              title="You haven't listed any services yet"
+              description="Create your first service to start receiving bookings."
+            />
           )}
 
           {!loading &&

@@ -2,12 +2,14 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { toast } from 'sonner';
-import { api, ApiClientError } from '@/lib/api';
-import { authStore } from '@/lib/auth-store';
+import { Users } from 'lucide-react';
+import { api } from '@/lib/api';
+import { getErrorMessage } from '@/lib/get-error-message';
 import type { AdminUser } from '@/lib/types';
 import { ProtectedRoute } from '@/components/protected-route';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
+import { EmptyState } from '@/components/empty-state';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -22,41 +24,31 @@ function AdminUsersContent() {
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
-    const token = authStore.getToken() ?? undefined;
     try {
-      const data = await api.get<AdminUser[]>('/api/users', token);
+      const data = await api.get<AdminUser[]>('/api/users');
       setUsers(data);
     } catch (error) {
-      const message =
-        error instanceof ApiClientError
-          ? error.message
-          : 'Could not load users';
-      toast.error(message);
+      toast.error(getErrorMessage(error, 'Could not load users'));
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    const init = async () => {
-      await load();
-    };
+    const timeoutId = window.setTimeout(() => {
+      void load();
+    }, 0);
 
-    void init();
+    return () => window.clearTimeout(timeoutId);
   }, [load]);
 
   const toggleStatus = async (id: string) => {
-    const token = authStore.getToken() ?? undefined;
     try {
-      await api.patch(`/api/users/${id}/status`, {}, token);
+      await api.patch(`/api/users/${id}/status`, {});
       toast.success('User status updated');
       load();
     } catch (error) {
-      const message =
-        error instanceof ApiClientError
-          ? error.message
-          : 'Could not update user';
-      toast.error(message);
+      toast.error(getErrorMessage(error, 'Could not update user'));
     }
   };
 
@@ -76,6 +68,10 @@ function AdminUsersContent() {
             Array.from({ length: 4 }).map((_, i) => (
               <Skeleton key={i} className="h-16 w-full rounded-lg" />
             ))}
+
+          {!loading && users.length === 0 && (
+            <EmptyState icon={Users} title="No users found" />
+          )}
 
           {!loading &&
             users.map(u => (
