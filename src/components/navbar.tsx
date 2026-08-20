@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/lib/use-auth';
 import { cn } from '@/lib/utils';
+import { getInitials } from '@/lib/get-initials';
 
 const navLinks = [
   { href: '/services', label: 'Browse services' },
@@ -77,12 +78,7 @@ export function Navbar() {
           {ready && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-[13px] font-bold text-accent-foreground">
-                {user.name
-                  .split(' ')
-                  .map(n => n[0])
-                  .join('')
-                  .slice(0, 2)
-                  .toUpperCase()}
+                {getInitials(user.name)}
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
