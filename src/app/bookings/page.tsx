@@ -2,8 +2,8 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { toast } from 'sonner';
-import { api, ApiClientError } from '@/lib/api';
-import { authStore } from '@/lib/auth-store';
+import { api } from '@/lib/api';
+import { getErrorMessage } from '@/lib/get-error-message';
 import { useAuth } from '@/lib/use-auth';
 import type { Booking, BookingStatus } from '@/lib/types';
 import { ProtectedRoute } from '@/components/protected-route';
@@ -11,10 +11,10 @@ import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { BookingStatusBadge } from '@/components/booking-status-badge';
 import { ReviewDialog } from '@/components/review-dialog';
+import { EmptyState } from '@/components/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Calendar } from 'lucide-react';
-import { EmptyState } from '@/components/empty-state';
 
 const nextActions: Record<
   BookingStatus,
@@ -36,43 +36,31 @@ function BookingsContent() {
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
-    const token = authStore.getToken();
-    if (!token) return;
     try {
-      const data = await api.get<Booking[]>('/api/bookings/my-bookings', token);
+      const data = await api.get<Booking[]>('/api/bookings/my-bookings');
       setBookings(data);
     } catch (error) {
-      const message =
-        error instanceof ApiClientError
-          ? error.message
-          : 'Could not load bookings';
-      toast.error(message);
+      toast.error(getErrorMessage(error, 'Could not load bookings'));
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    const initialize = async () => {
-      await load();
-    };
+    const timeoutId = window.setTimeout(() => {
+      void load();
+    }, 0);
 
-    void initialize();
+    return () => window.clearTimeout(timeoutId);
   }, [load]);
 
   const updateStatus = async (id: string, status: BookingStatus) => {
-    const token = authStore.getToken();
-    if (!token) return;
     try {
-      await api.patch(`/api/bookings/${id}/status`, { status }, token);
+      await api.patch(`/api/bookings/${id}/status`, { status });
       toast.success(`Booking marked ${status.toLowerCase()}`);
       load();
     } catch (error) {
-      const message =
-        error instanceof ApiClientError
-          ? error.message
-          : 'Could not update booking';
-      toast.error(message);
+      toast.error(getErrorMessage(error, 'Could not update booking'));
     }
   };
 

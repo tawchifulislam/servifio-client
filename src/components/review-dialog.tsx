@@ -6,8 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { Star, Loader2 } from 'lucide-react';
 import { reviewSchema, type ReviewValues } from '@/lib/validations/review';
-import { api, ApiClientError } from '@/lib/api';
-import { authStore } from '@/lib/auth-store';
+import { api } from '@/lib/api';
+import { getErrorMessage } from '@/lib/get-error-message';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -49,26 +49,17 @@ export function ReviewDialog({
   const onSubmit = async (values: ReviewValues) => {
     setLoading(true);
     try {
-      const token = authStore.getToken() ?? undefined;
-      await api.post(
-        '/api/reviews',
-        {
-          bookingId,
-          rating: values.rating,
-          comment: values.comment || undefined,
-        },
-        token,
-      );
-      toast.success('Review submitted - thanks for the feedback');
+      await api.post('/api/reviews', {
+        bookingId,
+        rating: values.rating,
+        comment: values.comment || undefined,
+      });
+      toast.success('Review submitted — thanks for the feedback');
       setOpen(false);
       form.reset();
       onSubmitted?.();
     } catch (error) {
-      const message =
-        error instanceof ApiClientError
-          ? error.message
-          : 'Something went wrong';
-      toast.error(message);
+      toast.error(getErrorMessage(error));
     } finally {
       setLoading(false);
     }

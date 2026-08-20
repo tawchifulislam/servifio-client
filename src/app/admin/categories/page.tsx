@@ -4,17 +4,18 @@ import { useEffect, useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import { Loader2, Plus, Trash2, Pencil } from 'lucide-react';
+import { Loader2, Plus, Trash2, Pencil, Tag } from 'lucide-react';
 import {
   categorySchema,
   type CategoryValues,
 } from '@/lib/validations/category';
-import { api, ApiClientError } from '@/lib/api';
-import { authStore } from '@/lib/auth-store';
+import { api } from '@/lib/api';
+import { getErrorMessage } from '@/lib/get-error-message';
 import type { Category } from '@/lib/types';
 import { ProtectedRoute } from '@/components/protected-route';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
+import { EmptyState } from '@/components/empty-state';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -54,21 +55,16 @@ function CategoryForm({
   const onSubmit = async (values: CategoryValues) => {
     setLoading(true);
     try {
-      const token = authStore.getToken() ?? undefined;
       if (initial) {
-        await api.patch(`/api/categories/${initial.id}`, values, token);
+        await api.patch(`/api/categories/${initial.id}`, values);
         toast.success('Category updated');
       } else {
-        await api.post('/api/categories', values, token);
+        await api.post('/api/categories', values);
         toast.success('Category created');
       }
       onDone();
     } catch (error) {
-      const message =
-        error instanceof ApiClientError
-          ? error.message
-          : 'Something went wrong';
-      toast.error(message);
+      toast.error(getErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -126,27 +122,28 @@ function AdminCategoriesContent() {
     try {
       const data = await api.get<Category[]>('/api/categories');
       setCategories(data);
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'Could not load categories'));
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    load();
+    const timeoutId = window.setTimeout(() => {
+      void load();
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
   }, [load]);
 
   const handleDelete = async (id: string) => {
-    const token = authStore.getToken() ?? undefined;
     try {
-      await api.delete(`/api/categories/${id}`, token);
+      await api.delete(`/api/categories/${id}`);
       toast.success('Category deleted');
       load();
     } catch (error) {
-      const message =
-        error instanceof ApiClientError
-          ? error.message
-          : 'Could not delete category';
-      toast.error(message);
+      toast.error(getErrorMessage(error, 'Could not delete category'));
     }
   };
 
@@ -191,7 +188,11 @@ function AdminCategoriesContent() {
             ))}
 
           {!loading && categories.length === 0 && (
-            <p className="text-foreground/50">No categories yet.</p>
+            <EmptyState
+              icon={Tag}
+              title="No categories yet"
+              description="Create your first category to start organizing services."
+            />
           )}
 
           {!loading &&

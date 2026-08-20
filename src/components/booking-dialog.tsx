@@ -7,8 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import { bookingSchema, type BookingValues } from '@/lib/validations/booking';
-import { api, ApiClientError } from '@/lib/api';
-import { authStore } from '@/lib/auth-store';
+import { api } from '@/lib/api';
+import { getErrorMessage } from '@/lib/get-error-message';
 import { useAuth } from '@/lib/use-auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -60,25 +60,16 @@ export function BookingDialog({
   const onSubmit = async (values: BookingValues) => {
     setLoading(true);
     try {
-      const token = authStore.getToken() ?? undefined;
-      await api.post(
-        '/api/bookings',
-        {
-          serviceId,
-          scheduledDate: new Date(values.scheduledDate).toISOString(),
-          note: values.note || undefined,
-        },
-        token,
-      );
-      toast.success('Booking requested - track it from My Bookings');
+      await api.post('/api/bookings', {
+        serviceId,
+        scheduledDate: new Date(values.scheduledDate).toISOString(),
+        note: values.note || undefined,
+      });
+      toast.success('Booking requested — track it from My Bookings');
       setOpen(false);
       form.reset();
     } catch (error) {
-      const message =
-        error instanceof ApiClientError
-          ? error.message
-          : 'Something went wrong';
-      toast.error(message);
+      toast.error(getErrorMessage(error));
     } finally {
       setLoading(false);
     }
